@@ -45,8 +45,36 @@ class WeightedGraph {
     return `Edge added between ${v1} and ${v2}`;
   }
   distance(arry) {
-      
+    //
+    let idx = 0,
+      start = arry[idx],
+      node,
+      distanceLength = 0,
+      end = arry[arry.length - 1];
+    if (!this.adjacentList[start] || !this.adjacentList[end])
+      return "NO SUCH ROUTE";
+    while (idx < arry.length) {
+      node = arry[idx];
+      let neighbors = this.adjacentList[node];
+      if (node === end) break;
+      idx++;
+      node = arry[idx];
+      let found = false;
+      for (let index in neighbors) {
+        let neighbor = neighbors[index];
+        if (neighbor.node === node) {
+          distanceLength += neighbor.weight;
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        return "NO SUCH ROUTE";
+      }
+    }
+    return distanceLength;
   }
+  tripNumber(arry) {}
   dijkstra(v1, end) {
     if (!this.adjacentList[v1] || !this.adjacentList[end])
       return "Please provide two correct vertex";
@@ -114,14 +142,31 @@ g.addVertex("B");
 g.addVertex("C");
 g.addVertex("D");
 g.addVertex("E");
-g.addVertex("F");
+// g.addVertex("F");
 
-g.addEdges("A", "B", 4);
-g.addEdges("A", "C", 8);
-g.addEdges("B", "D", 3);
-g.addEdges("C", "E", 4);
-g.addEdges("D", "F", 13);
-g.addEdges("E", "D", 4);
-g.addEdges("E", "F", 9);
+// g.addEdges("A", "B", 4);
+// g.addEdges("A", "C", 8);
+// g.addEdges("B", "D", 3);
+// g.addEdges("C", "E", 4);
+// g.addEdges("D", "F", 13);
+// g.addEdges("E", "D", 4);
+// g.addEdges("E", "F", 9);
+g.addDirectedEdge("A", "B", 5);
+g.addDirectedEdge("B", "C", 4);
+g.addDirectedEdge("C", "D", 8);
+g.addDirectedEdge("D", "C", 8);
+g.addDirectedEdge("D", "E", 6);
+g.addDirectedEdge("A", "D", 5);
+g.addDirectedEdge("C", "E", 2);
+g.addDirectedEdge("E", "B", 3);
+g.addDirectedEdge("A", "E", 7);
 
-console.log(g.dijkstra("A", "F"));
+// console.log(g.dijkstra("A", "F"));
+console.log("Distance is ", g.distance(["A", "B", "C"]));
+console.log("Distance is ", g.distance(["A", "D"]));
+console.log("Distance is ", g.distance(["A", "D", "C"]));
+console.log("Distance is ", g.distance(["A", "E", "B", "C", "D"]));
+console.log("Distance is ", g.distance(["A", "E", "D"]));
+console.log("#8 dijkstra is ", g.dijkstra("A","C"));
+console.log("#9 dijkstra is ", g.dijkstra("B","B"));
+
