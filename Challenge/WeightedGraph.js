@@ -9,17 +9,18 @@ class Queue {
     this.size = 0;
   }
   enqueue(val, priority) {
-    this.values.push({ val: val, priority });
+    this.values.push({ val, priority });
     this.size++;
     this.sort();
   }
   dequeue() {
+    let node = this.values.shift();
     this.size--;
-
-    return this.values.shift();
+    this.sort();
+    return node;
   }
   sort() {
-    this.values.sort((v1, v2) => v1.priority < v2.priority);
+    this.values.sort((v1, v2) => v1.priority - v2.priority);
   }
 }
 class WeightedGraph {
@@ -37,7 +38,18 @@ class WeightedGraph {
     this.adjacentList[v2].push({ node: v1, weight });
     return `Edge added between ${v1} and ${v2}`;
   }
+  addDirectedEdge(v1, v2, weight) {
+    if (!this.adjacentList[v1] || !this.adjacentList[v2])
+      return "Please provide two correct vertex";
+    this.adjacentList[v1].push({ node: v2, weight });
+    return `Edge added between ${v1} and ${v2}`;
+  }
+  distance(arry) {
+      
+  }
   dijkstra(v1, end) {
+    if (!this.adjacentList[v1] || !this.adjacentList[end])
+      return "Please provide two correct vertex";
     let visited = {},
       prev = {},
       shortDist = {},
@@ -53,7 +65,7 @@ class WeightedGraph {
         queue.enqueue(key, Infinity);
       }
     }
-    // console.log(shortDist);
+    //   console.table(queue.values);
     while (queue.size) {
       let node = queue.dequeue();
       if (node.val === end) {
@@ -74,10 +86,12 @@ class WeightedGraph {
           let child = children[childIndex];
 
           let total = child.weight;
-            if (prev[node.val]) {
+          if (prev[node.val]) {
             total += shortDist[node.val];
           }
-          console.log(`from ${node.val} => ${child.node} prev => ${prev[node.val]}`);
+          console.log(
+            `from ${node.val} => ${child.node} prev => ${prev[node.val]}`
+          );
           console.log(
             `total is ${total} shortdist is ${shortDist[child.node]}`
           );
@@ -104,7 +118,7 @@ g.addVertex("F");
 
 g.addEdges("A", "B", 4);
 g.addEdges("A", "C", 8);
-g.addEdges("B", "D", 5);
+g.addEdges("B", "D", 3);
 g.addEdges("C", "E", 4);
 g.addEdges("D", "F", 13);
 g.addEdges("E", "D", 4);
