@@ -74,7 +74,37 @@ class WeightedGraph {
     }
     return distanceLength;
   }
-  tripNumber(arry) {}
+  tripNumber(start, end, num) {
+    if (!this.adjacentList[start] || !this.adjacentList[end])
+      return "NO SUCH ROUTE";
+    let length = 0;
+    let trip = 0;
+    let path = [];
+    let node;
+    let stack = [start];
+    let neighbors;
+    let ans = 0;
+    while (stack.length && trip <= num) {
+      node = stack.pop();
+      path.push(node);
+      trip++;
+      neighbors = this.adjacentList[node];
+      console.log(node, trip);
+      for (let index in neighbors) {
+        let item = neighbors[index];
+        if (item.node === end) {
+          path.push(item.node);
+          console.log("path are", path);
+          path = path.splice(1, -1);
+          ans++;
+          //   return trip;
+        } else {
+          stack.push(item.node);
+        }
+      }
+    }
+    return ans || "NO ROUTE FOUND!";
+  }
   dijkstra(v1, end) {
     if (!this.adjacentList[v1] || !this.adjacentList[end])
       return "Please provide two correct vertex";
@@ -133,6 +163,34 @@ class WeightedGraph {
     }
     return result.reverse();
   }
+  dfs(currNode, e, visited, path, resutl) {
+    path.push(currNode);
+    visited[currNode] = true;
+    if (currNode === e) {
+      resutl.push([...path]);
+    } else {
+      let neighbors = this.adjacentList[currNode];
+      for (let index in neighbors) {
+        let neighbor = neighbors[index];
+        if (!visited[neighbor.node]) {
+          this.dfs(neighbor.node, e, visited, path, resutl);
+        }
+      }
+    }
+    path.pop();
+    visited[currNode] = false;
+  }
+  allPath(start, end) {
+    if (!this.adjacentList[start] || !this.adjacentList[end])
+      return "NO SUCH ROUTE";
+    let visited = {};
+    let path = [];
+    let resutl = [];
+
+    this.dfs(start, end, visited, path, resutl);
+    console.table(resutl);
+    return resutl;
+  }
 }
 
 let g = new WeightedGraph();
@@ -162,11 +220,12 @@ g.addDirectedEdge("E", "B", 3);
 g.addDirectedEdge("A", "E", 7);
 
 // console.log(g.dijkstra("A", "F"));
-console.log("Distance is ", g.distance(["A", "B", "C"]));
-console.log("Distance is ", g.distance(["A", "D"]));
-console.log("Distance is ", g.distance(["A", "D", "C"]));
-console.log("Distance is ", g.distance(["A", "E", "B", "C", "D"]));
-console.log("Distance is ", g.distance(["A", "E", "D"]));
-console.log("#8 dijkstra is ", g.dijkstra("A","C"));
-console.log("#9 dijkstra is ", g.dijkstra("B","B"));
-
+// console.log("Distance is ", g.distance(["A", "B", "C"]));
+// console.log("Distance is ", g.distance(["A", "D"]));
+// console.log("Distance is ", g.distance(["A", "D", "C"]));
+// console.log("Distance is ", g.distance(["A", "E", "B", "C", "D"]));
+// console.log("Distance is ", g.distance(["A", "E", "D"]));
+// console.log("#8 dijkstra is ", g.dijkstra("A", "C"));
+// console.log("#9 dijkstra is ", g.dijkstra("B", "B"));
+// console.log("#9 dijkstra is ", g.tripNumber("A", "C", 4));
+console.log("allPath is ", g.allPath("A", "C"));
