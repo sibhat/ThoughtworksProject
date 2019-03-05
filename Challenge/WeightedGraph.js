@@ -166,15 +166,13 @@ class WeightedGraph {
   dfs(currNode, e, visited, path, resutl) {
     path.push(currNode);
     visited[currNode] = true;
-    if (currNode === e) {
-      resutl.push([...path]);
-    } else {
-      let neighbors = this.adjacentList[currNode];
-      for (let index in neighbors) {
-        let neighbor = neighbors[index];
-        if (!visited[neighbor.node]) {
-          this.dfs(neighbor.node, e, visited, path, resutl);
-        }
+    let neighbors = this.adjacentList[currNode];
+    for (let index in neighbors) {
+      let neighbor = neighbors[index];
+      if (neighbor.node === e) {
+        resutl.push([...path, ...e]);
+      } else if (!visited[neighbor.node]) {
+        this.dfs(neighbor.node, e, visited, path, resutl);
       }
     }
     path.pop();
